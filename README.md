@@ -22,8 +22,6 @@ Takes a pre-determined list of OVF/OVA files and deploys them to the appropriate
 
 ### Import Tool Inputs
 
-2 x CSV files with the following format:-
-
 1. Imports.csv
     1. Source OVF path and filename e.g. "C:\OVFs\Test.ova"
     1. Destination vApp name e.g. "Test"
@@ -68,6 +66,15 @@ Sets a multitude of OVF runtime environment properties for a nummber of VMs.
 
 ### VM OVF Properties Tool Inputs
 
+1. VmOvfProps.csv
+
+
+1. Credentials.csv
+    1. vCenter datacenter name e.g. "TestDC"
+    1. vCenter username e.g. "vSphere@administrator.local"
+    1. vCenter password e.g. "P@ssw0rd"
+    1. vCenter DNS (or IP address) e.g. "vCenter.FakeDomain.com" or "192.168.0.1"
+
 ### VM OVF Properties Tool Outputs
 
 ## OVF Export Tool
@@ -93,4 +100,8 @@ Exports a pre-determined list of vApps into OVFs/OVAs, and optionally deletes th
 
 ### OVF Export Tool Outputs
 
-tets
+1. Multiple OVF/OVA files neatly placed in the export directories
+
+## XLSX to CSV exporter
+
+A simple tool which takes a _correctly_ structured excel XLSX file and spits out the CSV files the tools described here depend upon.
