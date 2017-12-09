@@ -18,9 +18,9 @@ The tools in this repository will provde  functions to support the deployment, m
 
 Takes a pre-determined list of OVF/OVA files and deploys them to the appropriate vCenter instance.
 
-### Usage
+### Import Tool Usage
 
-### Inputs
+### Import Tool Inputs
 
 2 x CSV files with the following format:-
 
@@ -46,7 +46,7 @@ Takes a pre-determined list of OVF/OVA files and deploys them to the appropriate
     1. vCenter password e.g. "P@ssw0rd"
     1. vCenter DNS (or IP address) e.g. "vCenter.FakeDomain.com" or "192.168.0.1"
 
-### Outputs
+### Import Tool Outputs
 
 1. vApps in the correct vCenter & powered-off
 
@@ -54,29 +54,43 @@ Takes a pre-determined list of OVF/OVA files and deploys them to the appropriate
 
 Sets the vApp startup, vAPP ovf properties and resource settings en masse.
 
-### Usage
+### vApp Properties Tool Usage
 
-### Inputs
+### vApp Properties Tool Inputs
 
-### Outputs
+### vApp Properties Tool Outputs
 
 ## VM OVF Properties Tool
 
-Sets a multitude of OVF environment runtime properties for a nummber of VMs en masse.
+Sets a multitude of OVF runtime environment properties for a nummber of VMs.
 
-### Usage
+### VM OVF Properties Tool Usage
 
-### Inputs
+### VM OVF Properties Tool Inputs
 
-### Outputs 
+### VM OVF Properties Tool Outputs
 
 ## OVF Export Tool
 
 Exports a pre-determined list of vApps into OVFs/OVAs, and optionally deletes the source vApp.
 
-### Usage
+### OVF Export Tool Usage
 
-### Inputs
+### OVF Export Tool Inputs
 
-### Outputs
+2 x CSV files with the following format:-
 
+1. Imports.csv
+    1. Source vApp name e.g. "Test"
+    1. Destination OVF path e.g. "C:\OVFs\"
+    1. Destination OVF filename and type e.g. "Test.ova"
+
+1. Credentials.csv
+    1. vCenter datacenter name e.g. "TestDC"
+    1. vCenter username e.g. "vSphere@administrator.local"
+    1. vCenter password e.g. "P@ssw0rd"
+    1. vCenter DNS (or IP address) e.g. vCenter.FakeDomain.com" or "192.168.0.1"
+
+### OVF Export Tool Outputs
+
+tets
