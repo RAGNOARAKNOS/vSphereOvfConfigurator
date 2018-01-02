@@ -56,6 +56,15 @@ Sets the vApp startup, vAPP ovf properties and resource settings en masse.
 
 ### vApp Properties Tool Inputs
 
+1. VAppProperties.csv
+    1. Source OVF path and filename e.g. "C:\OVFs\Test.ova"
+        1. Destination vApp name e.g. "Test"
+1. Credentials.csv
+    1. vCenter datacenter name e.g. "TestDC"
+    1. vCenter username e.g. "vSphere@administrator.local"
+    1. vCenter password e.g. "P@ssw0rd"
+    1. vCenter DNS (or IP address) e.g. "vCenter.FakeDomain.com" or "192.168.0.1"
+
 ### vApp Properties Tool Outputs
 
 ## VM OVF Properties Tool
