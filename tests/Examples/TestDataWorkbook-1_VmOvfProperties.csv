@@ -1,0 +1,5 @@
+VmName,Prop,Value
+TestyVm1,ip.address,192.168.0.1
+TestyVm1,arbitrary.nested,people
+TestyVm2,ip.address,192.168.0.2
+TestyVm2,ip.subnet,24

@@ -1,0 +1,2 @@
+DataCentreName,SourceAppName,DestinationOvfPath,DestinationOvfFilename
+FakeCorp,TestyApp,C:\Exports\,TestyExport.ova

@@ -1,0 +1,2 @@
+SourceFullPath,DestinationAppName,DestinationDcName,DestinationClusterName,DestinationHostName,DestinationDatastore,ThickProvision,DestNet0,DestNet1,DestNet3,DestNet4
+C:\OVF\Testy,TestyApp,FakeCorp,,ESXi01,TestDatastore,Yes,VM Network,,,

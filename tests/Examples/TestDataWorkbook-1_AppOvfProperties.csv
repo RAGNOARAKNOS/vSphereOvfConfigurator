@@ -1,0 +1,5 @@
+AppName,Prop,Value
+TestyApp,arbitrary,hello
+TestyApp,arbitrary.nested,world
+TestyApp,hostname,testyapp
+NonTestyApp,arbitrary,goodbye

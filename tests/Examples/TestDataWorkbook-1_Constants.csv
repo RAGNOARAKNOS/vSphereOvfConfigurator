@@ -1,0 +1,4 @@
+ConstantName,ConstantValue
+OvfToolPath,C:\Program Files\VMware\VMware OVF Tool\ovftool.exe
+ImportDir,C:\OVF\Import\
+ExportDir,C:\OVF\Export\
