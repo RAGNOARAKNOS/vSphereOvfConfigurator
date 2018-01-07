@@ -33,3 +33,12 @@ function Export-VM
 }
 
 # PowerCLI Export-VApp can be used for vApps
+$scriptPath = Split-Path $script:MyInvocation.MyCommand.Path
+Write-Host $scriptPath;
+$imports = Import-Csv ..\..\tests\Examples\TestDataWorkbook-1_AppExports.csv;
+
+foreach($item in $imports)
+{
+    Write-Host $item.SourceAppName;
+}
+#Import-Csv $MyInvocation.MyCommand.PSPath + 
