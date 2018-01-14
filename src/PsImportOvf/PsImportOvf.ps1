@@ -14,19 +14,44 @@ function Deploy-Ovfs
         [string]
         $importFileLoc
     )
-    
+
+    # Load data from config files
     $creds = Import-Csv $credentialFileLoc;
     $imports = Import-Csv $importFileLoc;
 
-    foreach($cred in $creds)
-    {
-        Write-Host $cred.DataCentreName
-    }
-
+    # Iterate through the config file
     foreach($import in $imports)
     {
         Write-Host "Deploying " $import.DestinationAppName "to" $import.DestinationDcName
-    
-        #Connect-VIServer -Server 
+        
+        # Get the VCSA login
+        $credential = $creds | Where-Object { $_.DataCentreName -eq $import.DestinationDcName }
+
+        # Connect to the vcenter
+        Write-Host $credential;
+        $vcsa = Connect-VIServer `
+            -Server $credential.DataCentreAddress `
+            -User $credential.Username `
+            -Password $credential.Password;
+
+        # Get the target location
+        if ($import.DestinationClusterName -ne "") 
+        {
+            # Deploying to a cluster
+            $targetCluster = Get-Cluster -Name $import.DestinationClusterName;
+
+            # Get any (available) host within that cluster
+            $targetHost = targetCluster | Get-VMHost | Where-Object { $_.ConnectionState -eq "Connected" } | Get-Random;
+        }
+        else 
+        {
+            #Deploying directly to a host
+            $targetHost = Get-VMHost -Name $import.DestinationHostName;
+        } 
+
+        # Deploy the vApp
+
+        # Disconnect from VCSA
+        Disconnect-VIServer -Server $vcsa -Force; 
     }
 }
