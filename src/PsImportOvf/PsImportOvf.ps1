@@ -1,6 +1,7 @@
 # Notes found at https://divyen.wordpress.com/2012/03/11/importingexporting-ova-in-vsphere-using-vmware-ovf-command-line-tool/
 # Notes http://www.vmwarebits.com/content/import-and-export-virtual-machines-command-line-vmwares-ovf-tool#
 # https://www.vmware.com/support/developer/PowerCLI/PowerCLI651/html/Import-VApp.html .
+# https://kb.vmware.com/s/article/1038709
 
 function Deploy-Ovfs 
 {
@@ -49,7 +50,26 @@ function Deploy-Ovfs
             $targetHost = Get-VMHost -Name $import.DestinationHostName;
         } 
 
+        # Get the target datastore
+        $ds = Get-Datastore -Name $import.DestinationDatastore;
+
+        # Determine the appropriate disk provisioning
+        if ($import.ThickProvision -eq "Yes") 
+        {
+            $diskProvision = "EagerZeroedThick";
+        }
+        else 
+        {
+            $diskProvision = "Thin";
+        }
+
         # Deploy the vApp
+        Import-VApp -Source $import.SourceFullPath `
+            -Name $import.DestinationAppName `
+            -VMHost $targetHost `
+            -Datastore $ds `
+            -DiskStorageFormat $diskProvision `
+            -Force:$true 
 
         # Disconnect from VCSA
         Disconnect-VIServer -Server $vcsa -Force; 
