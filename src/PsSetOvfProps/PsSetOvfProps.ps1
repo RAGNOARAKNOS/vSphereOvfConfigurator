@@ -6,9 +6,27 @@ function Set-VmOvfProps
     (
         [Parameter(Mandatory=$true)]
         [string]
-        $credentialFileLoc
+        $credentialFileLoc, 
+
+        [Parameter(Mandatory=$true)]
+        [string]
+        $vmOvfPropertiesLoc
     )
     
+    #Load data from config files
+    $creds = Import-Csv $credentialFileLoc;
+    $vmOvfProps = Import-Csv $vmOvfPropertiesLoc;
+    
+    # Get unique list of DCs
+    # Iterate thru each DC
+        # Get list of VMs for this DC
+        #Connect to DC API
+        #Apply VM props for VMs in that DC
+        # Disconnect from DC Api    
+    foreach($vmOvfProp in $vmOvfProps)
+    {
+
+    }
 }
 
 function Set-AppOvfProps
@@ -102,9 +120,4 @@ function Set-AppOvfProp
 
     $spec.Property += $propSpec;
     ($app | Get-View).UpdateVAppConfig($spec);
-
-
-
-
-
 }
