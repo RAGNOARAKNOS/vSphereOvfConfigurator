@@ -18,15 +18,102 @@ function Set-VmOvfProps
     $vmOvfProps = Import-Csv $vmOvfPropertiesLoc;
     
     # Get unique list of DCs
+    $vmDcs = $vmOvfProps | Select-Object -ExpandProperty DataCentreName | Get-Unique;
+    Write-Host "D"$vmDcs;
+    
     # Iterate thru each DC
-        # Get list of VMs for this DC
-        #Connect to DC API
-        #Apply VM props for VMs in that DC
-        # Disconnect from DC Api    
-    foreach($vmOvfProp in $vmOvfProps)
+    foreach($datacentre in $vmDcs)
     {
+        # Get connection details for DC
+        $connDetails = $creds | Where-Object -Property DataCentreName -eq $datacentre;
+        write-host "C"$connDetails;
 
+        #Connect to DC API
+        $session = Connect-VIServer `
+            -Server $connDetails.DataCentreAddress `
+            -User $connDetails.Username `
+            -Password $connDetails.Password;
+
+        # Get list of VMs for this DC
+        $vms = $vmOvfProps | Where-Object -Property DataCentreName -eq $datacentre | Select-Object -ExpandProperty VmName | Get-Unique;
+        Write-Host "V"$vms;
+
+        foreach($vm in $vms)
+        {
+            # Generate an OVF props hash table for the VM
+            Write-Host "Identified VM"$vm;
+            $perVmProps = $vmOvfProps | Where-Object -Property VmName -eq $vm;
+
+            Write-Host "P"$perVmProps;
+            $ovfTable = @{};
+
+            foreach($ovfProp in $perVmProps)
+            {
+                $ovfTable.Add($ovfProp.Prop, $ovfProp.Value);
+            }
+
+            Write-Host "HK"$ovfTable.Keys;
+            Write-Host "HV"$ovfTable.Values;
+
+            #Apply VM props for VMs in that DC
+            Set-VmOvfProperty -VM (Get-VM $vm) -ovfChanges $ovfTable;
+        }
+
+        # Disconnect from DC Api
+        Disconnect-VIServer $session;
     }
+}
+
+function Set-VmOvfProperty 
+{
+    Param(
+        # Virtual Machine
+        [Parameter(Mandatory=$true)]
+        $VM,
+
+        # OVF parameters hash table
+        [Parameter(Mandatory=$true)]
+        $ovfChanges
+    )
+    
+    # Get the current set of OVF properties
+    $VmOvfProperties = $VM.ExtensionData.config.VAppConfig.Property;
+
+    # Create a VMware update spec
+    $updateSpec = New-Object VMware.Vim.VirtualMachineConfigSpec;
+    $updateSpec.VAppConfig = New-Object VMware.Vim.VmConfigSpec;
+    $propertySpec = New-Object VMware.Vim.VAppPropertySpec[]($ovfChanges.Count);
+
+    # generate an empty property list (lazy delete hack...work on this lewis)
+    $emptySpec = New-Object VMware.Vim.VAppPropertySpec[](0);
+
+    $updateSpec.VAppConfig.Property = $emptySpec;
+
+    Write-host "Emptying VM properties for " $VM.Name;
+    $updateTask = $VM.ExtensionData.ReconfigVM_Task($updateSpec);
+    $taskTracker = Get-Task -Id ("Task-$($updateTask.value)");
+    $taskTracker | Wait-Task; 
+    Write-host "Empty";
+
+    # Generate new OVF properties set
+    foreach($ovfProp in $ovfChanges)
+    {
+        $tmp = New-Object VMware.Vim.VAppPropertySpec;
+        $tmp.Operation = "Add";
+        $tmp.Info = New-Object VMware.Vim.VAppPropertyInfo;
+        $tmp.Info.Key = $ovfProp.Key;
+        $tmp.Info.Value = $ovfProp.Value;
+        $propertySpec+=($tmp);
+    }
+
+    # apply the properties to the update spec
+    $updateSpec.VAppConfig.Property = $propertySpec;
+
+    # Execute the update task, and wait for completion
+    Write-host "Updating VM properties for " $VM.Name;
+    $updateTask = $VM.ExtensionData.ReconfigVM_Task($updateSpec);
+    $taskTracker = Get-Task -Id ("Task-$($updateTask.value)");
+    $taskTracker | Wait-Task; 
 }
 
 function Set-AppOvfProps
